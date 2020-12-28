@@ -1,21 +1,10 @@
 class BattleField:
-    def __init__(self, size=7, hide=False):
-        self.size = size
+    def __init__(self,  hide=False):
         self.hide = hide
-        self.field = [["O"] * size for _ in range(size)]
-        self.field[0][0] = " "
-        self.field[0][1] = "1"
-        self.field[0][2] = "2"
-        self.field[0][3] = "3"
-        self.field[0][4] = "4"
-        self.field[0][5] = "5"
-        self.field[0][6] = "6"
-        self.field[1][0] = "1"
-        self.field[2][0] = "2"
-        self.field[3][0] = "3"
-        self.field[4][0] = "4"
-        self.field[5][0] = "5"
-        self.field[6][0] = "6"
+        self.field = [[' ', '1', '2', '3', '4', '5', '6'], ['1', 'O', 'O', 'O', 'O', 'O', 'O'],
+                      ['2', 'O', 'O', 'O', 'O', 'O', 'O'], ['3', 'O', 'O', 'O', 'O', 'O', 'O'],
+                      ['4', 'O', 'O', 'O', 'O', 'O', 'O'], ['5', 'O', 'O', 'O', 'O', 'O', 'O'],
+                      ['6', 'O', 'O', 'O', 'O', 'O', 'O']]
 
     def test_print(self, x, y):
         self.field[x][y] = "X"
@@ -30,7 +19,7 @@ class Ships:
 
 
 b = BattleField()
-b.test_print(1, 1)
+b.test_print(2, 2)
 for i in b.field:
     print(i)
 
