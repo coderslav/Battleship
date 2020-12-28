@@ -1,15 +1,36 @@
-p11, p12, p13, p14, p15, p16, p21, p22, p23, p24, p25, p26, p31, p32, p33, p34, p35, p36, p41, p42, p43, p44, p45, \
- p46, p51, p52, p53, p54, p55, p56, p61, p62, p63, p64, p65, p66 = "O" * 36
-f11, f12, f13, f14, f15, f16, f21, f22, f23, f24, f25, f26, f31, f32, f33, f34, f35, f36, f41, f42, f43, f44, f45, \
- f46, f51, f52, f53, f54, f55, f56, f61, f62, f63, f64, f65, f66 = "O" * 36
-battle_field = f"""
-        Поле игрока                           Поле противника
-p | 1 | 2 | 3 | 4 | 5 | 6 |             f | 1 | 2 | 3 | 4 | 5 | 6 |    
-1 | {p11} | {p21} | {p31} | {p41} | {p51} | {p61} |             1 | {f11} | {f21} | {f31} | {f41} | {f51} | {f61} |
-2 | {p12} | {p22} | {p32} | {p42} | {p52} | {p62} |             2 | {f12} | {f22} | {f32} | {f42} | {f52} | {f62} |
-3 | {p13} | {p23} | {p33} | {p43} | {p53} | {p63} |             3 | {f13} | {f23} | {f33} | {f43} | {f53} | {f63} |
-4 | {p14} | {p24} | {p34} | {p44} | {p54} | {p64} |             4 | {f14} | {f24} | {f34} | {f44} | {f54} | {f64} |
-5 | {p15} | {p25} | {p35} | {p45} | {p55} | {p65} |             5 | {f15} | {f25} | {f35} | {f45} | {f55} | {f65} |
-6 | {p16} | {p26} | {p36} | {p46} | {p56} | {p66} |             6 | {f16} | {f26} | {f36} | {f46} | {f56} | {f66} |      
-"""
-print(battle_field)
+class BattleField:
+    def __init__(self, size=7, hide=False):
+        self.size = size
+        self.hide = hide
+        self.field = [["O"] * size for _ in range(size)]
+        self.field[0][0] = " "
+        self.field[0][1] = "1"
+        self.field[0][2] = "2"
+        self.field[0][3] = "3"
+        self.field[0][4] = "4"
+        self.field[0][5] = "5"
+        self.field[0][6] = "6"
+        self.field[1][0] = "1"
+        self.field[2][0] = "2"
+        self.field[3][0] = "3"
+        self.field[4][0] = "4"
+        self.field[5][0] = "5"
+        self.field[6][0] = "6"
+
+    def test_print(self, x, y):
+        self.field[x][y] = "X"
+        return self.field
+
+
+class Ships:
+    def __init__(self, position, hp, orientation):
+        self.position = position
+        self.hp = hp
+        self.orientation = orientation
+
+
+b = BattleField()
+b.test_print(1, 1)
+for i in b.field:
+    print(i)
+
