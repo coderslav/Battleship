@@ -31,10 +31,14 @@ class BattleField:
         self.busy = []
         self.ships = []
 
+    @staticmethod
+    def out_of_field(z):
+        return not ((0 <= z.x < 6) and (0 <= z.y < 6))
+
     def add_ship(self, ship):
 
         for i in ship.dots:
-            if self.out(i) or i in self.busy:
+            if self.out_of_field(i) or i in self.busy:
                 raise WrongShipException()
         for i in ship.dots:
             self.field[i.x][i.y] = Cell.ship_cell
@@ -52,7 +56,7 @@ class BattleField:
         for d in ship.dots:
             for dx, dy in near:
                 coord = Cell(d.x + dx, d.y + dy)
-                if not (self.out(coord)) and coord not in self.busy:
+                if not (self.out_of_field(coord)) and coord not in self.busy:
                     if z:
                         self.field[coord.x][coord.y] = Cell.miss_cell
                     self.busy.append(coord)
@@ -113,8 +117,4 @@ class Ships:
     def shot_reg(self, shot):
         return shot in self.dots
 
-
-b = BattleField()
-print(b.draw_field())
-print(b.draw_radar())
 
