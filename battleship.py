@@ -24,10 +24,9 @@ class WrongShipException(GameException):
 class BattleField:
     def __init__(self, hide=False):
         self.hide = hide
-        self.field = [[' ', '1', '2', '3', '4', '5', '6'], ['1', 'O', 'O', 'O', 'O', 'O', 'O'],
-                      ['2', 'O', 'O', 'O', 'O', 'O', 'O'], ['3', 'O', 'O', 'O', 'O', 'O', 'O'],
-                      ['4', 'O', 'O', 'O', 'O', 'O', 'O'], ['5', 'O', 'O', 'O', 'O', 'O', 'O'],
-                      ['6', 'O', 'O', 'O', 'O', 'O', 'O']]
+        self.field = [['O', 'O', 'O', 'O', 'O', 'O'], ['O', 'O', 'O', 'O', 'O', 'O'],
+                      ['O', 'O', 'O', 'O', 'O', 'O'], ['O', 'O', 'O', 'O', 'O', 'O'],
+                      ['O', 'O', 'O', 'O', 'O', 'O'], ['O', 'O', 'O', 'O', 'O', 'O']]
         self.busy = []
         self.ships = []
         self.count = 0
@@ -73,9 +72,9 @@ class BattleField:
 
         for ship in self.ships:
             if z in ship.dots:
-                ship.lives -= 1
+                ship.hp -= 1
                 self.field[z.x][z.y] = Cell.destroyed_ship
-                if ship.lives == 0:
+                if ship.hp == 0:
                     self.count += 1
                     self.non_ships_zone(ship, z=True)
                     print("Корабль потоплен!")
@@ -91,10 +90,11 @@ class BattleField:
     def reset(self):
         self.busy = []
 
-    def draw_field(self):
+    def __str__(self):
         field_str = ""
-        for row in self.field:
-            field_str += f"\n "+" | ".join(row)+" |"
+        field_str += "    1   2   3   4   5   6  "
+        for i, row in enumerate(self.field):
+            field_str += f"\n{i + 1} | " + " | ".join(row) + " |"
         if self.hide:
             field_str = field_str.replace("■", "O")
         return field_str
@@ -121,7 +121,7 @@ class Ships:
     def __init__(self, position, size, orientation):
         self.size = size
         self.hp = size
-        self.x, self.y = position
+        self.pos = position
         self.orientation = orientation
         self.busy = []
         self.ships = []
@@ -130,8 +130,8 @@ class Ships:
     def dots(self):
         ship_dots = []
         for i in range(self.size):
-            coord_x = self.x
-            coord_y = self.y
+            coord_x = self.pos.x
+            coord_y = self.pos.y
 
             if self.orientation == 0:
                 coord_x += i
@@ -190,3 +190,80 @@ class HomoSapiens(Player):
             x, y = int(x), int(y)
 
             return Cell(x - 1, y - 1)
+
+
+class Game:
+    def __init__(self):
+        player = self.random_battlefield()
+        computer = self.random_battlefield()
+        computer.hid = True
+
+        self.ai = AI(computer, player)
+        self.hs = HomoSapiens(player, computer)
+
+    def random_battlefield(self):
+        field = None
+        while field is None:
+            field = self.random_place()
+        return field
+
+    def random_place(self):
+        ship_lens = [3, 2, 2, 1, 1, 1, 1]
+        battlefield = BattleField()
+        attempts = 0
+        for i in ship_lens:
+            while True:
+                attempts += 1
+                if attempts > 2000:
+                    return None
+                ship = Ships(Cell(randint(0, 6), randint(0, 6)), i, randint(0, 1))
+                try:
+                    battlefield.add_ship(ship)
+                    break
+                except WrongShipException:
+                    pass
+        battlefield.reset()
+        return battlefield
+
+    @staticmethod
+    def greetings():
+        print("-------------------")
+
+    def loop(self):
+        num = 0
+        while True:
+            print("-" * 20)
+            print("Море пользователя:")
+            print(self.hs.battlefield)
+            print("-" * 20)
+            print("Море компьютера:")
+            print(self.ai.battlefield)
+            if num % 2 == 0:
+                print("-" * 20)
+                print("Пользователь ходит!")
+                repeat = self.hs.turn()
+            else:
+                print("-" * 20)
+                print("Компьютер ходит!")
+                repeat = self.ai.turn()
+            if repeat:
+                num -= 1
+
+            if self.ai.battlefield.count == 7:
+                print("-" * 20)
+                print("Пользователь выиграл!")
+                break
+
+            if self.hs.battlefield.count == 7:
+                print("-" * 20)
+                print("Компьютер выиграл!")
+                break
+            num += 1
+
+    def start(self):
+        self.greetings()
+        self.loop()
+
+
+g = Game()
+g.start()
