@@ -8,13 +8,13 @@ class GameException(Exception):
 class OutException(GameException):
     @staticmethod
     def message():
-        return "Не стреляйте за поле!"
+        return "\t\t\t\t\t\t\t\t\t\tНе стреляйте за поле!"
 
 
 class UsedException(GameException):
     @staticmethod
     def message():
-        return "Вы уже стреляли в эту клетку!"
+        return "\t\t\t\t\t\t\t\t\t\tВы уже стреляли в эту клетку!"
 
 
 class WrongShipException(GameException):
@@ -77,14 +77,14 @@ class BattleField:
                 if ship.hp == 0:
                     self.count += 1
                     self.non_ships_zone(ship, z=True)
-                    print("Корабль потоплен!")
+                    print("\t\t\t\t\t\t\t\t\t\tКорабль потоплен!")
                     return False
                 else:
-                    print("Корабль ранен!")
+                    print("\t\t\t\t\t\t\t\t\t\tКорабль ранен!")
                     return True
 
         self.field[z.x][z.y] = Cell.miss_cell
-        print("Мимо!")
+        print("\t\t\t\t\t\t\t\t\t\tМимо!")
         return False
 
     def reset(self):
@@ -92,9 +92,9 @@ class BattleField:
 
     def __str__(self):
         field_str = ""
-        field_str += "    1   2   3   4   5   6  "
+        field_str += "\t\t\t\t\t\t\t\t\t\t    1   2   3   4   5   6  "
         for i, row in enumerate(self.field):
-            field_str += f"\n{i + 1} | " + " | ".join(row) + " |"
+            field_str += f"\n\t\t\t\t\t\t\t\t\t\t{i + 1} | " + " | ".join(row) + " |"
         if self.hide:
             field_str = field_str.replace("■", "O")
         return field_str
@@ -168,23 +168,23 @@ class Player:
 class AI(Player):
     def ask(self):
         z = Cell(randint(0, 5), randint(0, 5))
-        print(f"Ход компьютера: {z.x + 1} {z.y + 1}")
+        print(f"\t\t\t\t\t\t\t\t\t\tХод компьютера: {z.x + 1} {z.y + 1}")
         return z
 
 
 class HomoSapiens(Player):
     def ask(self):
         while True:
-            coords = input("Ваш ход: ").split()
+            coords = input("\t\t\t\t\t\t\t\t\t\tВаш ход: ").split()
 
             if len(coords) != 2:
-                print(" Введите 2 координаты! ")
+                print("\t\t\t\t\t\t\t\t\t\tВведите, пожалуйста, 2 координаты через пробел и без запятых")
                 continue
 
             x, y = coords
 
             if not (x.isdigit()) or not (y.isdigit()):
-                print("Введите числа!")
+                print("\t\t\t\t\t\t\t\t\t\tВведите числа!")
                 continue
 
             x, y = int(x), int(y)
@@ -196,7 +196,7 @@ class Game:
     def __init__(self):
         player = self.random_battlefield()
         computer = self.random_battlefield()
-        computer.hid = True
+        computer.hide = True
 
         self.ai = AI(computer, player)
         self.hs = HomoSapiens(player, computer)
@@ -227,36 +227,33 @@ class Game:
 
     @staticmethod
     def greetings():
-        print("-------------------")
+        print("""
+                                     Добро пожаловать в игру Морской бой!
+                                              Играть очень просто: 
+                      Вам и Компьютеру создаются моря со случайным расположением кораблей
+           Выстрел воспроизводится в формате: x(координата слева) y(координата сверху) = клетка вашего выстрела
+                                                    Удачи!""")
 
     def loop(self):
         num = 0
         while True:
-            print("-" * 20)
-            print("Море пользователя:")
+            print("\t\t\t\t\t\t\t\t\t\tМоре пользователя:")
             print(self.hs.battlefield)
-            print("-" * 20)
-            print("Море компьютера:")
+            print("\t\t\t\t\t\t\t\t\t\tМоре компьютера:")
             print(self.ai.battlefield)
             if num % 2 == 0:
-                print("-" * 20)
-                print("Пользователь ходит!")
                 repeat = self.hs.turn()
             else:
-                print("-" * 20)
-                print("Компьютер ходит!")
                 repeat = self.ai.turn()
             if repeat:
                 num -= 1
 
             if self.ai.battlefield.count == 7:
-                print("-" * 20)
-                print("Пользователь выиграл!")
+                print("\t\t\t\t\t\t\t\t\t\tПользователь выиграл!")
                 break
 
             if self.hs.battlefield.count == 7:
-                print("-" * 20)
-                print("Компьютер выиграл!")
+                print("\t\t\t\t\t\t\t\t\t\tКомпьютер выиграл!")
                 break
             num += 1
 
