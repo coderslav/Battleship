@@ -30,6 +30,7 @@ class BattleField:
                       ['6', 'O', 'O', 'O', 'O', 'O', 'O']]
         self.busy = []
         self.ships = []
+        self.count = 0
 
     @staticmethod
     def out_of_field(z):
@@ -61,6 +62,35 @@ class BattleField:
                         self.field[coord.x][coord.y] = Cell.miss_cell
                     self.busy.append(coord)
 
+    def shot(self, z):
+        if self.out_of_field(z):
+            raise OutException()
+
+        if z in self.busy:
+            raise UsedException()
+
+        self.busy.append(z)
+
+        for ship in self.ships:
+            if z in ship.dots:
+                ship.lives -= 1
+                self.field[z.x][z.y] = Cell.destroyed_ship
+                if ship.lives == 0:
+                    self.count += 1
+                    self.non_ships_zone(ship, z=True)
+                    print("Корабль потоплен!")
+                    return False
+                else:
+                    print("Корабль ранен!")
+                    return True
+
+        self.field[z.x][z.y] = Cell.miss_cell
+        print("Мимо!")
+        return False
+
+    def reset(self):
+        self.busy = []
+
     def draw_field(self):
         field_str = ""
         for row in self.field:
@@ -74,7 +104,6 @@ class Cell:
     empty_cell = 'O'
     ship_cell = '■'
     destroyed_ship = 'X'
-    damaged_ship = '□'
     miss_cell = '•'
 
     def __init__(self, x, y):
