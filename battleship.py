@@ -147,3 +147,46 @@ class Ships:
         return shot in self.dots
 
 
+class Player:
+    def __init__(self, battlefield, enemy_battlefield):
+        self.battlefield = battlefield
+        self.enemy_battlefield = enemy_battlefield
+
+    def turn(self):
+        while True:
+            try:
+                target = self.ask()
+                repeat = self.enemy_battlefield.shot(target)
+                return repeat
+            except GameException as x:
+                print(x)
+
+    def ask(self):
+        raise NotImplementedError()
+
+
+class AI(Player):
+    def ask(self):
+        z = Cell(randint(0, 5), randint(0, 5))
+        print(f"Ход компьютера: {z.x + 1} {z.y + 1}")
+        return z
+
+
+class HomoSapiens(Player):
+    def ask(self):
+        while True:
+            coords = input("Ваш ход: ").split()
+
+            if len(coords) != 2:
+                print(" Введите 2 координаты! ")
+                continue
+
+            x, y = coords
+
+            if not (x.isdigit()) or not (y.isdigit()):
+                print("Введите числа!")
+                continue
+
+            x, y = int(x), int(y)
+
+            return Cell(x - 1, y - 1)
