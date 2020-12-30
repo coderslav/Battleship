@@ -36,23 +36,17 @@ class BattleField:
         return not ((0 <= z.x < 6) and (0 <= z.y < 6))
 
     def add_ship(self, ship):
-
         for i in ship.dots:
             if self.out_of_field(i) or i in self.busy:
                 raise WrongShipException()
         for i in ship.dots:
             self.field[i.x][i.y] = Cell.ship_cell
             self.busy.append(i)
-
         self.ships.append(ship)
         self.non_ships_zone(ship)
 
     def non_ships_zone(self, ship, z=False):
-        near = [
-            (-1, -1), (-1, 0), (-1, 1),
-            (0, -1), (0, 0), (0, 1),
-            (1, -1), (1, 0), (1, 1)
-        ]
+        near = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
         for d in ship.dots:
             for dx, dy in near:
                 coord = Cell(d.x + dx, d.y + dy)
@@ -197,7 +191,6 @@ class Game:
         player = self.random_battlefield()
         computer = self.random_battlefield()
         computer.hide = True
-
         self.ai = AI(computer, player)
         self.hs = HomoSapiens(player, computer)
 
@@ -207,7 +200,8 @@ class Game:
             field = self.random_place()
         return field
 
-    def random_place(self):
+    @staticmethod
+    def random_place():
         ship_lens = [3, 2, 2, 1, 1, 1, 1]
         battlefield = BattleField()
         attempts = 0
@@ -234,7 +228,7 @@ class Game:
            Выстрел воспроизводится в формате: x(координата слева) y(координата сверху) = клетка вашего выстрела
                                                     Удачи!""")
 
-    def loop(self):
+    def while_true_loop(self):
         num = 0
         while True:
             print("\t\t\t\t\t\t\t\t\t\tМоре пользователя:")
@@ -259,7 +253,7 @@ class Game:
 
     def start(self):
         self.greetings()
-        self.loop()
+        self.while_true_loop()
 
 
 g = Game()
